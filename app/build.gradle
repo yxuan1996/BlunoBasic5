@@ -4,7 +4,7 @@ android {
     compileSdkVersion 21
 
     defaultConfig {
-        applicationId "com.dfrobot.angelo.blunobasictest3"
+        applicationId "com.dfrobot.angelo.blunobasictest24"
         minSdkVersion 18
         targetSdkVersion 21
         versionCode 1
@@ -16,6 +16,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/raw'] } }
 }
 
 dependencies {

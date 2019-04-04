@@ -3,6 +3,7 @@ package com.dfrobot.angelo.blunobasicdemo;
 import android.content.Context;
 import android.os.Bundle;
 import android.content.Intent;
+import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
+import android.media.MediaPlayer;
 
 public class MainActivity  extends BlunoLibrary {
 	private Button buttonScan;
@@ -28,8 +29,15 @@ public class MainActivity  extends BlunoLibrary {
 	private TextView serialVoltage3;
 	private TextView serialVoltage4;
 	private TextView serialVoltage5;
-	private static DecimalFormat REAL_FORMATTER = new DecimalFormat("0.##");
-	
+
+	private MediaPlayer onel;
+	private MediaPlayer twol;
+	private MediaPlayer threel;
+	private MediaPlayer fourl;
+	private MediaPlayer fivel;
+
+	public String myString;
+	public Handler handler = new Handler();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,6 +59,14 @@ public class MainActivity  extends BlunoLibrary {
 		serialVoltage4=(TextView) findViewById(R.id.voltage4);
 		serialVoltage5=(TextView) findViewById(R.id.voltage5);
 
+		onel = MediaPlayer.create(this, R.raw.onel);
+		twol = MediaPlayer.create(this, R.raw.twol);
+		threel = MediaPlayer.create(this, R.raw.threel);
+		fourl = MediaPlayer.create(this, R.raw.fourl);
+		fivel = MediaPlayer.create(this, R.raw.fivel);
+
+
+		handler.postDelayed(runnable, 1000);
 
 		buttonScan = (Button) findViewById(R.id.buttonScan);					//initial the button for scanning the BLE device
         buttonScan.setOnClickListener(new OnClickListener() {
@@ -120,63 +136,102 @@ public class MainActivity  extends BlunoLibrary {
 
 	@Override
 	public void onSerialReceived(String theString) {							//Once connection data received, this function will be called
-		// TODO Auto-generated method stub
 
-		String [] separated = {"100","100","100","100","100"};
-		try {
-			separated = theString.split("\\:");
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+		myString = theString;
 
-
-
-//		List<String> tokens = new ArrayList<>();
-//		StringTokenizer tokenizer = new StringTokenizer(theString, ":");
-//		while (tokenizer.hasMoreElements()) {
-//			tokens.add(tokenizer.nextToken());
-//		}
-
-		String token1 = separated[0];
-		String token2 = separated[1];
-		String token3 = separated[2];
-		String token4 = separated[3];
-		String token5 = separated[4];
-
-
-//		String token1 = tokens.get(0);
-//		String token2 = tokens.get(1);
-//		String token3 = tokens.get(2);
-//		String token4 = tokens.get(3);
-//		String token5 = tokens.get(4);
-
-		serialValue1.setText(token1);
-		serialValue2.setText(token2);
-		serialValue3.setText(token3);
-		serialValue4.setText(token4);
-		serialValue5.setText(token5);
-
-		//Conversion to voltage value
-		double d1 = Double.parseDouble(token1);
-		double d2 = Double.parseDouble(token2);
-		double d3 = Double.parseDouble(token3);
-		double d4 = Double.parseDouble(token4);
-		double d5 = Double.parseDouble(token5);
-
-		double v1 = d1 * 5 / 1023;
-		double v2 = d2 * 5 / 1023;
-		double v3 = d3 * 5 / 1023;
-		double v4 = d4 * 5 / 1023;
-		double v5 = d5 * 5 / 1023;
-
-
-		serialVoltage1.setText(REAL_FORMATTER.format(v1));
-		serialVoltage2.setText(REAL_FORMATTER.format(v2));
-		serialVoltage3.setText(REAL_FORMATTER.format(v3));
-		serialVoltage4.setText(REAL_FORMATTER.format(v4));
-		serialVoltage5.setText(REAL_FORMATTER.format(v5));
 
 		//The Serial data from the BLUNO may be sub-packaged, so using a buffer to hold the String is a good choice.
 	}
+
+	public Runnable runnable = new Runnable(){
+		@Override
+		public void run(){
+			if(myString != null){
+
+				char first = myString.charAt(0);
+				if (first == '&'){
+					String [] separated = myString.split("\\:");
+					if (separated.length >= 5) {
+						String token1 = separated[0].substring(1);
+						String token2 = separated[1];
+						String token3 = separated[2];
+						String token4 = separated[3];
+						String token5 = separated[4];
+						serialValue1.setText(token1);
+						serialValue2.setText(token2);
+						serialValue3.setText(token3);
+						serialValue4.setText(token4);
+						serialValue5.setText(token5);
+
+						//Conversion to voltage value
+						if (token1 != null && token1.length() > 0 && token1 != " "){
+							double d1 = Double.valueOf(token1);
+
+							double v1 = d1 * 5 / 1023;
+
+							if (v1 > 800){
+								onel.start();
+							}
+
+							serialVoltage1.setText(String.format("%.1f",v1));
+						}
+
+						if (token2 != null && token2.length() > 0 && token2 != " "){
+							double d2 = Double.valueOf(token2);
+
+							double v2 = d2 * 5 / 1023;
+
+							if (v2 > 800){
+								twol.start();
+							}
+
+							serialVoltage2.setText(String.format("%.1f",v2));
+						}
+
+						if (token3 != null && token3.length() > 0 && token3 != " "){
+							double d3 = Double.valueOf(token3);
+
+							double v3 = d3 * 5 / 1023;
+
+							if (v3 > 800){
+								threel.start();
+							}
+
+							serialVoltage3.setText(String.format("%.1f",v3));
+						}
+
+						if (token4 != null && token4.length() > 0 && token4 != " "){
+							double d4 = Double.valueOf(token4);
+
+							double v4 = d4 * 5 / 1023;
+
+							if (v4 > 800){
+								fourl.start();
+							}
+
+							serialVoltage4.setText(String.format("%.1f",v4));
+						}
+
+						if (token5 != null && token5.length() > 0 && token5 != " "){
+							double d5 = Double.valueOf(token5);
+
+							double v5 = d5 * 5 / 1023;
+
+							if (v5 > 800){
+								fivel.start();
+							}
+
+							serialVoltage5.setText(String.format("%.1f",v5));
+						}
+
+
+					}
+				}
+
+			}
+			handler.postDelayed(this,100);
+
+		}
+	};
 
 }
