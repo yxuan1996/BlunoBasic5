@@ -169,7 +169,7 @@ public class MainActivity  extends BlunoLibrary {
 
 							double v1 = d1 * 5 / 1023;
 
-							if (v1 > 800){
+							if (d1 > 800){
 								onel.start();
 							}
 
@@ -181,7 +181,7 @@ public class MainActivity  extends BlunoLibrary {
 
 							double v2 = d2 * 5 / 1023;
 
-							if (v2 > 800){
+							if (d2 > 800){
 								twol.start();
 							}
 
@@ -193,7 +193,7 @@ public class MainActivity  extends BlunoLibrary {
 
 							double v3 = d3 * 5 / 1023;
 
-							if (v3 > 800){
+							if (d3 > 800){
 								threel.start();
 							}
 
@@ -205,7 +205,7 @@ public class MainActivity  extends BlunoLibrary {
 
 							double v4 = d4 * 5 / 1023;
 
-							if (v4 > 800){
+							if (d4 > 800){
 								fourl.start();
 							}
 
@@ -217,7 +217,7 @@ public class MainActivity  extends BlunoLibrary {
 
 							double v5 = d5 * 5 / 1023;
 
-							if (v5 > 800){
+							if (d5 > 800){
 								fivel.start();
 							}
 
