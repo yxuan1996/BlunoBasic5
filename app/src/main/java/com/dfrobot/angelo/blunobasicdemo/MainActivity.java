@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -11,6 +12,11 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileWriter;
+import com.opencsv.CSVWriter;
+
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +24,8 @@ import android.media.MediaPlayer;
 
 public class MainActivity  extends BlunoLibrary {
 	private Button buttonScan;
+	private Button buttonReset;
+	private Button buttonSave;
 	private TextView serialReceivedText;
 	private TextView serialValue1;
 	private TextView serialValue2;
@@ -30,11 +38,13 @@ public class MainActivity  extends BlunoLibrary {
 	private TextView serialVoltage4;
 	private TextView serialVoltage5;
 
-	private MediaPlayer onel;
-	private MediaPlayer twol;
-	private MediaPlayer threel;
-	private MediaPlayer fourl;
-	private MediaPlayer fivel;
+//	private MediaPlayer onel;
+//	private MediaPlayer twol;
+//	private MediaPlayer threel;
+//	private MediaPlayer fourl;
+//	private MediaPlayer fivel;
+
+	public List<String[]> data = new ArrayList<String[]>();
 
 	public String myString;
 	public Handler handler = new Handler();
@@ -59,11 +69,11 @@ public class MainActivity  extends BlunoLibrary {
 		serialVoltage4=(TextView) findViewById(R.id.voltage4);
 		serialVoltage5=(TextView) findViewById(R.id.voltage5);
 
-		onel = MediaPlayer.create(this, R.raw.onel);
-		twol = MediaPlayer.create(this, R.raw.twol);
-		threel = MediaPlayer.create(this, R.raw.threel);
-		fourl = MediaPlayer.create(this, R.raw.fourl);
-		fivel = MediaPlayer.create(this, R.raw.fivel);
+//		onel = MediaPlayer.create(this, R.raw.onel);
+//		twol = MediaPlayer.create(this, R.raw.twol);
+//		threel = MediaPlayer.create(this, R.raw.threel);
+//		fourl = MediaPlayer.create(this, R.raw.fourl);
+//		fivel = MediaPlayer.create(this, R.raw.fivel);
 
 
 		handler.postDelayed(runnable, 1000);
@@ -78,6 +88,45 @@ public class MainActivity  extends BlunoLibrary {
 				buttonScanOnClickProcess();										//Alert Dialog for selecting the BLE device
 			}
 		});
+
+		buttonReset = (Button) findViewById(R.id.buttonReset);
+		buttonReset.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				serialValue1.setText(null);
+				serialValue2.setText(null);
+				serialValue3.setText(null);
+				serialValue4.setText(null);
+				serialValue5.setText(null);
+				serialVoltage1.setText(null);
+				serialVoltage2.setText(null);
+				serialVoltage3.setText(null);
+				serialVoltage4.setText(null);
+				serialVoltage5.setText(null);
+				data.clear();
+				Log.d(TAG, "Data has been reset");
+
+			}
+		});
+
+
+		buttonSave = (Button) findViewById(R.id.buttonSave);
+		buttonSave.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				File file = new File("/sdcard/BLEapp/data.csv");
+				try {
+					FileWriter outputfile = new FileWriter(file);
+					CSVWriter writer = new CSVWriter(outputfile);
+					writer.writeAll(data);
+					writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		data.add(new String[] { "Sensor1", "Sensor2", "Sensor3", "Sensor4", "Sensor5" });
 	}
 
 	protected void onResume(){
@@ -163,15 +212,17 @@ public class MainActivity  extends BlunoLibrary {
 						serialValue4.setText(token4);
 						serialValue5.setText(token5);
 
+						data.add(new String[] { token1, token2, token3, token4, token5 });
+
 						//Conversion to voltage value
 						if (token1 != null && token1.length() > 0 && token1 != " "){
 							double d1 = Double.valueOf(token1);
 
 							double v1 = d1 * 5 / 1023;
 
-							if (d1 > 800){
-								onel.start();
-							}
+//							if (d1 < 300){
+//								onel.start();
+//							}
 
 							serialVoltage1.setText(String.format("%.1f",v1));
 						}
@@ -181,9 +232,9 @@ public class MainActivity  extends BlunoLibrary {
 
 							double v2 = d2 * 5 / 1023;
 
-							if (d2 > 800){
-								twol.start();
-							}
+//							if (d2 < 300){
+//								twol.start();
+//							}
 
 							serialVoltage2.setText(String.format("%.1f",v2));
 						}
@@ -193,9 +244,9 @@ public class MainActivity  extends BlunoLibrary {
 
 							double v3 = d3 * 5 / 1023;
 
-							if (d3 > 800){
-								threel.start();
-							}
+//							if (d3 < 300){
+//								threel.start();
+//							}
 
 							serialVoltage3.setText(String.format("%.1f",v3));
 						}
@@ -205,9 +256,9 @@ public class MainActivity  extends BlunoLibrary {
 
 							double v4 = d4 * 5 / 1023;
 
-							if (d4 > 800){
-								fourl.start();
-							}
+//							if (d4 < 300){
+//								fourl.start();
+//							}
 
 							serialVoltage4.setText(String.format("%.1f",v4));
 						}
@@ -217,9 +268,9 @@ public class MainActivity  extends BlunoLibrary {
 
 							double v5 = d5 * 5 / 1023;
 
-							if (d5 > 800){
-								fivel.start();
-							}
+//							if (d5 < 300){
+//								fivel.start();
+//							}
 
 							serialVoltage5.setText(String.format("%.1f",v5));
 						}
@@ -229,7 +280,7 @@ public class MainActivity  extends BlunoLibrary {
 				}
 
 			}
-			handler.postDelayed(this,100);
+			handler.postDelayed(this,20);
 
 		}
 	};

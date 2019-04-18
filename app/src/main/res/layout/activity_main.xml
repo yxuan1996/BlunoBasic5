@@ -24,11 +24,11 @@
             android:text="Scan" />
 
         <Button
-            android:id="@+id/buttonGraph"
+            android:id="@+id/buttonReset"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Graph" />
+            android:text="Reset" />
 
         <Button
             android:id="@+id/buttonSave"

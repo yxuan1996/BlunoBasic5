@@ -85,7 +85,7 @@ public abstract  class BlunoLibrary  extends Activity{
 	
 	public boolean mConnected = false;
 
-    private final static String TAG = BlunoLibrary.class.getSimpleName();
+    public final static String TAG = BlunoLibrary.class.getSimpleName();
 
     private Runnable mConnectingOverTimeRunnable=new Runnable(){
 

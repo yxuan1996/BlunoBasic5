@@ -4,7 +4,7 @@ android {
     compileSdkVersion 21
 
     defaultConfig {
-        applicationId "com.dfrobot.angelo.blunobasictest25"
+        applicationId "com.dfrobot.angelo.bleapp"
         minSdkVersion 18
         targetSdkVersion 21
         versionCode 1
@@ -23,4 +23,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:appcompat-v7:21.0.3'
+    implementation "com.opencsv:opencsv:4.0"
 }
